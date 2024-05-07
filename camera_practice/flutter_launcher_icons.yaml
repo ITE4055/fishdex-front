@@ -1,0 +1,4 @@
+flutter_icons:
+  ios: true
+  image_path: "lib/icons/fishing.png"
+  android: "launcher_icon"
