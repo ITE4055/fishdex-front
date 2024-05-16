@@ -49,6 +49,9 @@ dependencies:
   minio_new: ^1.0.2
   path: ^1.8.3
   flutter_launcher_icons: ^0.13.1
+  s3_storage: ^1.0.4
+  path_provider: ^2.0.9
+  http_parser: ^4.0.0
 
 dev_dependencies:
   flutter_test:

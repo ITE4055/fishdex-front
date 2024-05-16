@@ -74,10 +74,10 @@ class _LoginPageState extends State<LoginPage> {
       try {
         await UserApi.instance.loginWithKakaoTalk();
         print('카카오톡으로 로그인 성공');
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => HomePage()));
+        // Navigator.pushReplacement(context,
+        //     MaterialPageRoute(builder: (context) => HomePage()));
 
-        // loginUser();
+        loginUser();
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
 
@@ -90,9 +90,9 @@ class _LoginPageState extends State<LoginPage> {
         try {
           await UserApi.instance.loginWithKakaoAccount();
           print('카카오계정으로 로그인 성공');
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => HomePage()));
-          // loginUser();
+          // Navigator.pushReplacement(context,
+          //     MaterialPageRoute(builder: (context) => HomePage()));
+          loginUser();
         } catch (error) {
           print('카카오계정으로 로그인 실패 $error');
         }
@@ -101,8 +101,8 @@ class _LoginPageState extends State<LoginPage> {
       try {
         await UserApi.instance.loginWithKakaoAccount();
         print('카카오계정으로 로그인 성공');
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => HomePage()));
+        // Navigator.pushReplacement(context,
+        //     MaterialPageRoute(builder: (context) => HomePage()));
         loginUser();
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
