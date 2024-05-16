@@ -9,6 +9,7 @@ import 'package:aws_s3_upload/aws_s3_upload.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:path/path.dart' as p;
 import 'package:fishdex/view/login/login_page.dart';
+import 'package:http_parser/http_parser.dart';
 
 class Gallery extends StatefulWidget {
   const Gallery({super.key});
@@ -23,79 +24,85 @@ class _GalleryState extends State<Gallery> {
   XFile? _image;
   final ImagePicker picker = ImagePicker();
 
-  _uploadToS3() async{
-    if(_image != null){
-      try{
+  _uploadToS3() async {
+    if (_image != null) {
+      try {
         String filename = p.basename(_image!.path);
-        var request = http.MultipartRequest('PUT', Uri.parse('https://oq98wk34h3.execute-api.ap-northeast-2.amazonaws.com/dev/final-fishdex/${filename}'));
-        request.files.add(await http.MultipartFile.fromPath('file', _image!.path));
-        var response = await request.send();
+        var url = Uri.parse('https://final-fishdex.s3.ap-northeast-2.amazonaws.com/${filename}');
+        var response = await http.put(
+          url,
+          headers: {'Content-Type': 'image/png'},
+          body: File(_image!.path).readAsBytesSync(),
+        );
+        print("RESPONSE SC: ${response.statusCode}");
 
-        if(response.statusCode == 200){
+        if (response.statusCode == 200) {
           print("S3에 업로드 성공!");
-          print("https://final-fishdex.s3.ap-northeast-2.amazonaws.com/${filename}");
-          String s3_uri =  "https://final-fishdex.s3.ap-northeast-2.amazonaws.com/${filename}";
+          print(
+              "https://final-fishdex.s3.ap-northeast-2.amazonaws.com/${filename}");
+          String s3_uri = "https://final-fishdex.s3.ap-northeast-2.amazonaws.com/${filename}";
           return s3_uri;
         }
-        else{
+        else {
           print("S3에 업로드 실패! : ${response.statusCode}");
           return 's3 fail';
         }
       }
-      catch(e){
+      catch (e) {
         print("S3 업로드 실패: $e");
         return 's3 fail';
       }
     }
   }
 
-  _uploadImage() async{
-    if (_image != null){
+  _uploadImage() async {
+    if (_image != null) {
       var uri = Uri.parse('http://218.39.215.36:5000/predict');
       var request = http.MultipartRequest('POST', uri);
-      request.files.add(await http.MultipartFile.fromPath('image', _image!.path.toString()));
+      request.files.add(
+          await http.MultipartFile.fromPath('image', _image!.path.toString()));
 
       var response = await request.send();
 
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         String species = await response.stream.bytesToString();
         Map<String, dynamic> jsonData = jsonDecode(species);
         String category = jsonData['species'];
         print('species: $category');
         return category;
       }
-      else{
+      else {
         print('UPLOAD FAILED');
         return 'no species';
       }
     }
-    else{
+    else {
       print('NO IMAGE SELECTED');
       return 'no species';
     }
   }
 
 
-  Future getImage(ImageSource imageSource) async{
+  Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
-    if (pickedFile != null){
+    if (pickedFile != null) {
       setState(() {
         _image = XFile(pickedFile.path);
       });
     }
   }
 
-  getUsercode() async{
-    try{
+  getUsercode() async {
+    try {
       User user = await UserApi.instance.me();
       return user.id.toString();
     }
-    catch(e){
+    catch (e) {
       print("GETUSERCODE ERROR: $e");
     }
   }
 
-  _uploadtoApiServer(String usercode, String s3_url, String category) async{
+  _uploadtoApiServer(String usercode, String s3_url, String category) async {
     try {
       var uri = Uri.parse('http://218.39.215.36:3000/upload');
 
@@ -120,7 +127,7 @@ class _GalleryState extends State<Gallery> {
         print("Usercode, Url, Category 업로드 실패");
       }
     }
-    catch(e){
+    catch (e) {
       print("upload to api server error : $e");
     }
   }
@@ -130,7 +137,6 @@ class _GalleryState extends State<Gallery> {
     var _text = '';
 
     return Scaffold(
-      // appBar: AppBar(title: const Text('Image')),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -154,28 +160,30 @@ class _GalleryState extends State<Gallery> {
               _text,
             ),
             //이거 빼기
-            ElevatedButton(onPressed: () => getImage(ImageSource.gallery), child: Text('Select Image', style: TextStyle(color: Colors.lightBlueAccent))),
+            ElevatedButton(onPressed: () => getImage(ImageSource.gallery),
+                child: Text('Select Image',
+                    style: TextStyle(color: Colors.lightBlueAccent))),
             if (_image != null)
               Column(
                 children: [
                   ElevatedButton(
                     onPressed: () {
                       setState(() async {
-                        try{
+                        try {
                           _text = await _uploadImage();
                           print(_text);
                         }
-                        catch(e){
+                        catch (e) {
                           print("ERROR: $e");
                         }
-
                       });
                     },
-                    child: Text('UPLOAD', style: TextStyle(color: Colors.lightBlueAccent)),
+                    child: Text('UPLOAD',
+                        style: TextStyle(color: Colors.lightBlueAccent)),
                   ),
                   ElevatedButton(onPressed: () {
-                    setState(() async{
-                      if(_image != null) {
+                    setState(() async {
+                      if (_image != null) {
                         try {
                           print("이미지이미지이밎: ");
                           String url = await _uploadToS3();
@@ -186,7 +194,7 @@ class _GalleryState extends State<Gallery> {
                           print("CATEGORY CATEGORY CATEGORY: " + category);
                           _uploadtoApiServer(usercode, url, category);
                         }
-                        catch(e){
+                        catch (e) {
                           print("ERROR: $e");
                         }
                         // String s3_uri = returnS3Uri() as String;
@@ -194,7 +202,8 @@ class _GalleryState extends State<Gallery> {
                       }
                     });
                   },
-                    child: Text('도감에 저장', style: TextStyle(color: Colors.lightBlueAccent)),
+                    child: Text('도감에 저장',
+                        style: TextStyle(color: Colors.lightBlueAccent)),
                   )
                 ],
               )

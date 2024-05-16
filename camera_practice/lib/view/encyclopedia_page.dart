@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'fish_page.dart';
 
 class EncyclopediaPage extends StatefulWidget {
   const EncyclopediaPage({Key? key});
@@ -46,7 +47,15 @@ class _EncyclopediaPageState extends State<EncyclopediaPage> {
             childAspectRatio: 0.6,
             children: List<Widget>.generate(9, (index) {
               // String img = 'lib/fish/fish1.png';
-              return Container(
+              return InkWell(
+                onTap: (){
+                  print("${fishNames[index]} clicked!");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const FishPage()),
+                  );
+                },
+                child: Container(
                 color: Colors.black12,
                 padding: const EdgeInsets.all(20),
                 margin: const EdgeInsets.all(5),
@@ -75,6 +84,7 @@ class _EncyclopediaPageState extends State<EncyclopediaPage> {
                     ),
                   ],
                 )
+                ),
               );
             }),
           ),
