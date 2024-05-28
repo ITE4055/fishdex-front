@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'fish_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:fishdex/utils.dart';
 
 class EncyclopediaPage extends StatefulWidget {
   const EncyclopediaPage({Key? key});
@@ -9,8 +13,47 @@ class EncyclopediaPage extends StatefulWidget {
 }
 
 class _EncyclopediaPageState extends State<EncyclopediaPage> {
+
+  // _getUrlImages(String usercode, String category) async {
+  //   // final url = 'http://218.39.215.36:3000/download/$category';
+  //   // var uri = Uri.parse('http://218.39.215.36:3000/download/$category'); // Adjust if necessary
+  //   // // Map data = {
+  //   // //   'usercode': usercode
+  //   // // };
+  //   // final Map<String, String> params = {'usercode': usercode};
+  //
+  //   // final uri = Uri.parse(url);
+  //   // final response = await http.get(uri, headers:params);
+  //
+  //   // var body = json.encode(params);
+  //
+  //   final String baseUrl = 'http://218.39.215.36:3000/download/$category';
+  //
+  //   // Complete URL with usercode as a query parameter
+  //   var uri = Uri.parse('$baseUrl?usercode=$usercode');
+  //
+  //   print("uri: $uri");
+  //   print("USERCODE: $usercode");
+  //
+  //   var response = await http.get(uri);
+  //
+  //   print("STATUS CODE: ${response.statusCode}");
+  //
+  //   if (response.statusCode == 200) {
+  //     String responseBody = response.body;
+  //     List<dynamic> jsonData = jsonDecode(responseBody);
+  //     List<String> urls = jsonData.map((item) => item['url'] as String).toList();
+  //     print("Retrieved URLs: $urls");
+  //     return urls;
+  //   } else {
+  //     print("Can't get Images");
+  //     return [];
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
+    var _text = [];
 
     List<String> fishNames = [
       '흑해 청어', //'Black Sea Sprat', //fish-1
@@ -22,6 +65,18 @@ class _EncyclopediaPageState extends State<EncyclopediaPage> {
       '붉은 숭어', //'Red Mullet', //fish-7
       '전갱이', //'Horse Mackerel', //fish-8
       '도미', //'Gilt Head Bream', //fish-9
+    ];
+
+    List<String> english_fishnames = [
+      'Black Sea Sprat',
+      'Trout',
+      'Striped Red Mullet',
+      'Shrimp',
+      'Sea Bass',
+      'Red Sea Bream',
+      'Red Mullet',
+      'Horse Mackerel',
+      'Gilt-Head Bream',
     ];
 
     return Scaffold(
@@ -48,8 +103,12 @@ class _EncyclopediaPageState extends State<EncyclopediaPage> {
             children: List<Widget>.generate(9, (index) {
               // String img = 'lib/fish/fish1.png';
               return InkWell(
-                onTap: (){
-                  print("${fishNames[index]} clicked!");
+                onTap: () async {
+                  print("${english_fishnames[index]} clicked!");
+                  String? usercode = await getUsercode();
+                  print("usercode: $usercode");
+                  _text = await getUrlImages(usercode!, english_fishnames[index]);
+                  print('LIST OF URL:   ${_text}');
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const FishPage()),

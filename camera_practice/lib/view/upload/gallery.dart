@@ -38,8 +38,7 @@ class _GalleryState extends State<Gallery> {
 
         if (response.statusCode == 200) {
           print("S3에 업로드 성공!");
-          print(
-              "https://final-fishdex.s3.ap-northeast-2.amazonaws.com/${filename}");
+          print("https://final-fishdex.s3.ap-northeast-2.amazonaws.com/${filename}");
           String s3_uri = "https://final-fishdex.s3.ap-northeast-2.amazonaws.com/${filename}";
           return s3_uri;
         }
@@ -104,7 +103,7 @@ class _GalleryState extends State<Gallery> {
 
   _uploadtoApiServer(String usercode, String s3_url, String category) async {
     try {
-      var uri = Uri.parse('http://218.39.215.36:3000/upload');
+      var uri = Uri.parse('http://54.180.91.88:3000/api/image/upload');
 
       Map data = {
         'usercode': usercode,
@@ -113,6 +112,7 @@ class _GalleryState extends State<Gallery> {
       };
 
       var body = json.encode(data);
+
       var response = await http.post(
         uri,
         headers: {"Content-Type": "application/json"},
