@@ -28,7 +28,7 @@ class _FishPageState extends State<FishPage> {
     try {
       var url = Uri.parse('https://final-fishdex.s3.ap-northeast-2.amazonaws.com/00030.png');
       var response = await http.get(url);
-      print("RESPONSE SC: ${response.statusCode}");
+      // print("RESPONSE SC: ${response.statusCode}");
 
 
       if (response.statusCode == 200) {

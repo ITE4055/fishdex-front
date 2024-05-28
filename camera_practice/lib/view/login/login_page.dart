@@ -25,12 +25,25 @@ class _LoginPageState extends State<LoginPage> {
   Future<String?> loginUser() async {
     try{
       User user = await UserApi.instance.me();
+
+      print(user.kakaoAccount?.profile?.nickname);
+      print(user.id.toString());
+
+      Map data = {
+        'username': user.kakaoAccount?.profile?.nickname,
+        'usercode': user.id.toString(),
+      };
+
+      var body = json.encode(data);
+
       final response = await http.post(
-        Uri.parse('http://218.39.215.36:3000/login'),
-        body:{
-          'username': user.kakaoAccount?.profile?.nickname,
-          'usercode': user.id.toString(),
-        },
+        Uri.parse('http://54.180.91.88:3000/api/user/login'),
+        headers: {"Content-Type": "application/json"},
+        // body:{
+        //   'username': user.kakaoAccount?.profile?.nickname,
+        //   'usercode': user.id.toString(),
+        // },
+        body: body,
 
       );
       print('리스폰스');
@@ -47,7 +60,6 @@ class _LoginPageState extends State<LoginPage> {
         prefs.setString('usercode', user.id.toString());
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => HomePage()));
-
         return token;
 
       }
