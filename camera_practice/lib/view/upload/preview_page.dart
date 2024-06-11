@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -28,7 +29,7 @@ class PreviewPage extends StatelessWidget {
     );
   }
   void _uploadImage(String imagePath) async{
-    var uri = Uri.parse('http://218.39.215.36:5000/predict');
+    var uri = Uri.parse(dotenv.get('FLASK_URL') + '/predict');
     var request = http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('image', imagePath));
 

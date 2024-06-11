@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -16,7 +17,7 @@ Future<String?> getUsercode() async {
 
 getUrlImages(String usercode, String category) async {
 
-  var uri = Uri.parse('http://54.180.91.88:3000/api/image/$category');
+  var uri = Uri.parse(dotenv.get('BASE_URL') + '/image/$category');
 
   // Create the body of the request
   var body = json.encode({'usercode': usercode});

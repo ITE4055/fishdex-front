@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:aws_s3_upload/aws_s3_upload.dart';
@@ -28,7 +29,7 @@ class _GalleryState extends State<Gallery> {
     if (_image != null) {
       try {
         String filename = p.basename(_image!.path);
-        var url = Uri.parse('https://final-fishdex.s3.ap-northeast-2.amazonaws.com/${filename}');
+        var url = Uri.parse(dotenv.get('S3_URL') + '/${filename}');
         var response = await http.put(
           url,
           headers: {'Content-Type': 'image/png'},
@@ -38,8 +39,8 @@ class _GalleryState extends State<Gallery> {
 
         if (response.statusCode == 200) {
           print("S3에 업로드 성공!");
-          print("https://final-fishdex.s3.ap-northeast-2.amazonaws.com/${filename}");
-          String s3_uri = "https://final-fishdex.s3.ap-northeast-2.amazonaws.com/${filename}";
+          print(dotenv.get('S3_URL') + '/${filename}');
+          String s3_uri = dotenv.get('S3_URL') + '/${filename}';
           return s3_uri;
         }
         else {
@@ -56,7 +57,7 @@ class _GalleryState extends State<Gallery> {
 
   _uploadImage() async {
     if (_image != null) {
-      var uri = Uri.parse('http://218.39.215.36:5000/predict');
+      var uri = Uri.parse(dotenv.get('FLASK_URL') + '/predict');
       var request = http.MultipartRequest('POST', uri);
       request.files.add(
           await http.MultipartFile.fromPath('image', _image!.path.toString()));
@@ -103,7 +104,7 @@ class _GalleryState extends State<Gallery> {
 
   _uploadtoApiServer(String usercode, String s3_url, String category) async {
     try {
-      var uri = Uri.parse('http://54.180.91.88:3000/api/image/upload');
+      var uri = Uri.parse(dotenv.get('BASE_URL') + '/image/upload');
 
       Map data = {
         'usercode': usercode,
