@@ -10,6 +10,17 @@ class BadgePage extends StatefulWidget {
 }
 
 class _BadgePageState extends State<BadgePage> {
+  List<bool> _isBadgeActive = [
+    true,
+    true,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false
+  ];
 
   _setMainBadgeTitle(String badgeImage, String title) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -118,10 +129,19 @@ class _BadgePageState extends State<BadgePage> {
             child: GridTile(
               child: Container(
                 padding: EdgeInsets.all(8.0), // 위아래 공간을 만들기 위해 패딩을 추가합니다.
+                color: _isBadgeActive[index]
+                    ? Colors.transparent
+                    : Colors.grey.withOpacity(0.5),
                 child: Center(
                   child: Image.asset(
                     imageList[index],
                     fit: BoxFit.cover,
+                    color: _isBadgeActive[index]
+                        ? null
+                        : Colors.grey.withOpacity(0.5),
+                    colorBlendMode: _isBadgeActive[index]
+                        ? null
+                        : BlendMode.saturation,
                   ),
                 ),
               ),
