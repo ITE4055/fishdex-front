@@ -8,7 +8,7 @@ import 'package:s3_storage/s3_storage.dart';
 //controller - Mediates between the Model and the View,
 // handling user input and updating the model accordingly.
 
-Future<void> main() async{
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   KakaoSdk.init(
