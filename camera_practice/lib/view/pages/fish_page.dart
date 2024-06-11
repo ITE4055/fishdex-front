@@ -7,33 +7,36 @@ import 'package:http/http.dart' as http;
 
 
 class FishPage extends StatefulWidget {
-  const FishPage({super.key});
+  final String imageUrl;
+
+  const FishPage({super.key, required this.imageUrl});
 
   @override
   State<FishPage> createState() => _FishPageState();
 }
 
 class _FishPageState extends State<FishPage> {
-  String? imageUrl;
+  String? fetchedImageUrl;
 
   @override
   void initState() {
     super.initState();
-    fetchImageFromS3();
+    fetchImageFromS3(widget.imageUrl);
   }
 
 
 
-  fetchImageFromS3() async {
+  fetchImageFromS3(String imageUrl) async {
     try {
-      var url = Uri.parse('https://final-fishdex.s3.ap-northeast-2.amazonaws.com/00030.png');
+      // var url = Uri.parse('https://final-fishdex.s3.ap-northeast-2.amazonaws.com/00030.png');
+      var url = Uri.parse(imageUrl);
       var response = await http.get(url);
       // print("RESPONSE SC: ${response.statusCode}");
 
 
       if (response.statusCode == 200) {
         setState(() {
-          imageUrl = url.toString();
+          fetchedImageUrl = url.toString();
         });
         print("IMAGE URL: ${imageUrl}");
       } else {
@@ -50,9 +53,9 @@ class _FishPageState extends State<FishPage> {
       appBar: AppBar(
         title: Text("이미지 불러오기"),
       ),
-      body: imageUrl == null
+      body: fetchedImageUrl == null
           ? Center(child: CircularProgressIndicator())
-          : Image.network(imageUrl!),
+          : Image.network(fetchedImageUrl!),
     );
   }
 }
