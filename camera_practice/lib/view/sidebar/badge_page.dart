@@ -70,21 +70,26 @@ class _BadgePageState extends State<BadgePage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightBlueAccent,
-        title: Text(
-          '뱃지', // 텍스트 내용
+        backgroundColor: Color(0xFF98BAD5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
+        title: const Text(
+          '컬렉션', // 텍스트 내용
           style: TextStyle(
             fontSize: 30, // 폰트 크기 설정
             fontFamily: 'Roboto', // 사용할 폰트 설정
             fontWeight: FontWeight.bold, // 폰트 굵기 설정
             fontStyle: FontStyle.italic, // 폰트 스타일 설정
-            color: Colors.black, // 텍스트 색상 설정
+            color: Colors.white, // 텍스트 색상 설정
           ),
         ),
         centerTitle: true,
-        automaticallyImplyLeading: false
-
+        automaticallyImplyLeading: false,
       ),
+      backgroundColor: Color(0xFFC6D3E3),
       body: GridView.builder(
         itemCount: imageList.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

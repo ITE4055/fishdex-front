@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fishdex/view/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -60,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
         prefs.setString('username', un);
         prefs.setString('usercode', user.id.toString());
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => HomePage()));
+            MaterialPageRoute(builder: (context) => BottomNav()));
         return token;
 
       }

@@ -1,3 +1,4 @@
+import 'package:fishdex/view/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,7 +17,7 @@ class AutoLoginScreen extends StatelessWidget {
           return CircularProgressIndicator();
         } else {
           if (snapshot.data == true) {
-            return HomePage();
+            return BottomNav();
           } else {
             return LoginPage();
           }
