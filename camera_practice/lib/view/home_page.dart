@@ -61,127 +61,97 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightBlueAccent,
-        title: Text(
-          'fishdex', // 텍스트 내용
+        backgroundColor: Color(0xFF98BAD5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
+        title: const Text(
+          'Fishdex', // 텍스트 내용
           style: TextStyle(
             fontSize: 30, // 폰트 크기 설정
             fontFamily: 'Roboto', // 사용할 폰트 설정
             fontWeight: FontWeight.bold, // 폰트 굵기 설정
             fontStyle: FontStyle.italic, // 폰트 스타일 설정
-            color: Colors.black, // 텍스트 색상 설정
+            color: Colors.white, // 텍스트 색상 설정
           ),
         ),
         centerTitle: true,
-
-        // leading: IconButton(
-        //   icon: Icon(Icons.person),
-        //   onPressed: () {
-        //     _scaffoldKey.currentState?.openDrawer();
-        //   },
-        // ),
-
+        automaticallyImplyLeading: false,
       ),
-      // key: _scaffoldKey,
-      drawer: Drawer(
-        child: ListView(
+      backgroundColor: Color(0xFFC6D3E3),
 
-          children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName: Text('$_username'),
-              accountEmail: null,
-            ),
-            ListTile(
-              leading: Icon(Icons.album),
-              title: Text('뱃지'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const BadgePage()),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text('계정 설정'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AccountPage()),
-                );
-              },
-            ),
-
-          ],
-        ),
-      ),
-
-
-      body: SafeArea(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                '$_mainTitle', // 텍스트 내용
-                style: TextStyle(
-                  fontSize: 24, // 폰트 크기 설정
-                  fontFamily: 'Roboto', // 사용할 폰트 설정
-                  fontWeight: FontWeight.bold, // 폰트 굵기 설정
-                  // fontStyle: FontStyle.italic, // 폰트 스타일 설정
-                  color: Colors.black54, // 텍스트 색상 설정
+              SizedBox(height: 20),
+
+              Card(
+                color: Color(0xffffffff),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 20),
+                      CircleAvatar(
+                        radius: 80,
+                        backgroundImage: AssetImage('$_mainBadgeImagePath'), // 뱃지 이미지
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        '타이틀$_mainTitle',
+                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.yellow),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        '이름$_username',
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                      SizedBox(height: 10),
+                    ],
+                  ),
                 ),
               ),
-              SizedBox(height: 10.0),
-              Container(
-                width: 150, // 이미지의 너비를 200으로 설정
-                height: 150, // 이미지의 높이를 200으로 설정
-                child: Image.asset(
-                  '$_mainBadgeImagePath', // 이미지 경로
-                  fit: BoxFit.cover, // 이미지를 화면에 맞게 늘리고 자르기
-                ),
-              ),
-              SizedBox(height: 10.0),
-              Text(
-                '$_username님 반갑습니다', // 텍스트 내용
-                style: TextStyle(
-                  fontSize: 30, // 폰트 크기 설정
-                  fontFamily: 'Roboto', // 사용할 폰트 설정
-                  fontWeight: FontWeight.bold, // 폰트 굵기 설정
-                  // fontStyle: FontStyle.italic, // 폰트 스타일 설정
-                  color: Colors.black54, // 텍스트 색상 설정
-                ),
-              ),
-              SizedBox(height: 20.0),
-              Row(
+
+              Spacer(),
+
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(
-                    width: 150,
-                    height: 120,
-                    child: ElevatedButton(
+                    height: 60,
+                    child: ElevatedButton.icon(
                       onPressed: () async {
                         await availableCameras().then((value) => Navigator.push(context,
                             MaterialPageRoute(builder: (_) => CameraPage(cameras: value))));
                       },
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.lightBlueAccent,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0))),
-                      child: Transform.scale(
-                        scale: 0.5,
-                        child: Image.asset(
-                          'lib/icons/camera.png',
-                          color: Colors.white,
+                        backgroundColor: Color(0xff98bad5),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
+                      ),
+                      icon: Icon(
+                        Icons.camera_alt,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                      label: Text(
+                        '카메라로 등록하기',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 20.0),
+                  SizedBox(height: 20),
                   SizedBox(
-                    width: 150,
-                    height: 120,
-                    child: ElevatedButton(
+                    height: 60,
+                    child: ElevatedButton.icon(
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -189,66 +159,36 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.lightBlueAccent,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0))),
-                      child: Transform.scale(
-                        scale: 0.5,
-                        child: Image.asset(
-                          'lib/icons/gallery.png',
-                          color: Colors.white,
+                        backgroundColor: Color(0xff98bad5),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
+                      ),
+                      icon: Icon(
+                        Icons.photo,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                      label: Text(
+                        '앨범에서 등록하기',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                     ),
                   ),
-
-
-
-                ]
-              ),
-              const SizedBox(height: 20.0), // Add space between the buttons
-
-              SizedBox(
-                width: 320,
-                height: 120,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => EncyclopediaPage()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.lightBlueAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  child: Transform.scale(
-                    scale: 0.7,
-                    child: Image.asset(
-                      'lib/icons/encyclopedia.png',
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                ],
               ),
 
+              SizedBox(height: 20),
             ],
           ),
         ),
       ),
+
     );
   }
 }
 
 
-_openSite() async {
-  final Uri url = Uri.parse('https://tpirates.com/%EC%8B%9C%EC%84%B8');
-  if (!await launchUrl(url)){
-    print("Can't open URL");
-  }
-}
 
 // black sea sprat - 흑해 청어
 // gilt-head bream - 도미
@@ -259,13 +199,3 @@ _openSite() async {
 // shrimp - 새우
 // striped red mullet - 줄무늬 붉은돔
 // trout - 송어
-
-
-void _openGallery() async{
-  final ImagePicker _picker = ImagePicker();
-  final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-
-  if (image != null){
-    XFile(image.path);
-  }
-}

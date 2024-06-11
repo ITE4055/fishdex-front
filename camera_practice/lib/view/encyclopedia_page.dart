@@ -52,7 +52,7 @@ class _EncyclopediaPageState extends State<EncyclopediaPage> {
           ),
         ),
         title: const Text(
-          'Fishdex', // 텍스트 내용
+          '도감', // 텍스트 내용
           style: TextStyle(
             fontSize: 30, // 폰트 크기 설정
             fontFamily: 'Roboto', // 사용할 폰트 설정
