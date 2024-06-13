@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:fishdex/view/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class BadgePage extends StatefulWidget {
   const BadgePage({super.key});
@@ -22,8 +26,38 @@ class _BadgePageState extends State<BadgePage> {
     0
   ];
 
-  _loadBadgeList() {
+  _loadBadgeList(String usercode) async {
+    var uri = Uri.parse(dotenv.get('BASE_URL') + '/user/badges');
 
+    // Create the body of the request
+    var body = json.encode({'usercode': usercode});
+
+    var request = http.Request('GET', uri)
+      ..headers['Content-Type'] = 'application/json'
+      ..body = body;
+
+    var response = await request.send();
+
+    var responseBody = await response.stream.bytesToString();
+
+    print("USERCODE: $usercode");
+    print("STATUS CODE: ${response.statusCode}");
+    print("RESPONSE BODY: ${responseBody}");
+
+    if(response.statusCode == 200){
+      var jsonData = json.decode(responseBody);
+      print("Image URLs: ${jsonData}");
+      return [jsonData];
+    }
+    if(response.statusCode == 401){
+      var jsonData = json.decode(responseBody);
+      print("$jsonData");
+      return [jsonData];
+    }
+    else{
+      print("Failed to Load Badges");
+      return [];
+    }
   }
 
   _setMainBadgeTitle(String badgeImage, String title) async {
