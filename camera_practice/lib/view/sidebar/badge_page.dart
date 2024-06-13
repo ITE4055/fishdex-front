@@ -10,17 +10,21 @@ class BadgePage extends StatefulWidget {
 }
 
 class _BadgePageState extends State<BadgePage> {
-  List<bool> _isBadgeActive = [
-    true,
-    true,
-    false,
-    false,
-    false,
-    true,
-    true,
-    false,
-    false
+  List<int> _isBadgeActive = [
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
   ];
+
+  _loadBadgeList() {
+
+  }
 
   _setMainBadgeTitle(String badgeImage, String title) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -108,17 +112,18 @@ class _BadgePageState extends State<BadgePage> {
                     title: Text(titleList[index]),
                     content: Text(descriptionList[index]),
                     actions: <Widget>[
-                      TextButton(
-                        child: Text('대표 뱃지로 등록'),
-                        onPressed: () {
-                          _setMainBadgeTitle(imageList[index], titleList[index]);
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                                (route) => false,
-                          );
-                        },
-                      ),
+                      if (_isBadgeActive[index] == 1)
+                        TextButton(
+                          child: Text('대표 뱃지로 등록'),
+                          onPressed: () {
+                            _setMainBadgeTitle(imageList[index], titleList[index]);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => HomePage()),
+                                  (route) => false,
+                            );
+                          },
+                        ),
                       TextButton(
                         child: Text('취소'),
                         onPressed: () {
@@ -134,17 +139,17 @@ class _BadgePageState extends State<BadgePage> {
             child: GridTile(
               child: Container(
                 padding: EdgeInsets.all(8.0), // 위아래 공간을 만들기 위해 패딩을 추가합니다.
-                color: _isBadgeActive[index]
+                color: _isBadgeActive[index] == 1
                     ? Colors.transparent
                     : Colors.grey.withOpacity(0.5),
                 child: Center(
                   child: Image.asset(
                     imageList[index],
                     fit: BoxFit.cover,
-                    color: _isBadgeActive[index]
+                    color: _isBadgeActive[index] == 1
                         ? null
                         : Colors.grey.withOpacity(0.5),
-                    colorBlendMode: _isBadgeActive[index]
+                    colorBlendMode: _isBadgeActive[index] == 1
                         ? null
                         : BlendMode.saturation,
                   ),
