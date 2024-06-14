@@ -14,23 +14,32 @@ class BadgePage extends StatefulWidget {
 }
 
 class _BadgePageState extends State<BadgePage> {
-  List<int> _isBadgeActive = [
-    1,
-    1,
-    1,
-    1,
-    0,
-    0,
-    0,
-    0,
-    0
+  List<String> _isBadgeActive = [
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
   ];
 
-  _loadBadgeList(String usercode) async {
-    var uri = Uri.parse(dotenv.get('BASE_URL') + '/user/badges');
+  @override
+  void initState() {
+    super.initState();
+    _loadBadgeList();
+  }
+
+
+
+  Future<void> _loadBadgeList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var uri = Uri.parse(dotenv.get('BASE_URL') + '/user/code');
 
     // Create the body of the request
-    var body = json.encode({'usercode': usercode});
+    var body = json.encode({'usercode': prefs.getString('usercode')});
 
     var request = http.Request('GET', uri)
       ..headers['Content-Type'] = 'application/json'
@@ -40,24 +49,30 @@ class _BadgePageState extends State<BadgePage> {
 
     var responseBody = await response.stream.bytesToString();
 
-    print("USERCODE: $usercode");
+    // print("USERCODE: $usercode");
     print("STATUS CODE: ${response.statusCode}");
     print("RESPONSE BODY: ${responseBody}");
 
     if(response.statusCode == 200){
       var jsonData = json.decode(responseBody);
-      print("Image URLs: ${jsonData}");
-      return [jsonData];
+      // print(jsonData["badges"].split(','));
+
+      setState(() {
+        _isBadgeActive = jsonData["badges"].split(',');
+      });
+
+      print(_isBadgeActive);
+      // return [jsonData];
     }
-    if(response.statusCode == 401){
-      var jsonData = json.decode(responseBody);
-      print("$jsonData");
-      return [jsonData];
-    }
-    else{
-      print("Failed to Load Badges");
-      return [];
-    }
+    // if(response.statusCode == 401){
+    //   var jsonData = json.decode(responseBody);
+    //   print("$jsonData");
+    //   return [jsonData];
+    // }
+    // else{
+    //   print("Failed to Load User");
+    //   return [];
+    // }
   }
 
   _setMainBadgeTitle(String badgeImage, String title) async {
@@ -146,7 +161,7 @@ class _BadgePageState extends State<BadgePage> {
                     title: Text(titleList[index]),
                     content: Text(descriptionList[index]),
                     actions: <Widget>[
-                      if (_isBadgeActive[index] == 1)
+                      if (_isBadgeActive[index] == '1')
                         TextButton(
                           child: Text('대표 뱃지로 등록'),
                           onPressed: () {
@@ -173,17 +188,17 @@ class _BadgePageState extends State<BadgePage> {
             child: GridTile(
               child: Container(
                 padding: EdgeInsets.all(8.0), // 위아래 공간을 만들기 위해 패딩을 추가합니다.
-                color: _isBadgeActive[index] == 1
+                color: _isBadgeActive[index] == '1'
                     ? Colors.transparent
                     : Colors.grey.withOpacity(0.5),
                 child: Center(
                   child: Image.asset(
                     imageList[index],
                     fit: BoxFit.cover,
-                    color: _isBadgeActive[index] == 1
+                    color: _isBadgeActive[index] == '1'
                         ? null
                         : Colors.grey.withOpacity(0.5),
-                    colorBlendMode: _isBadgeActive[index] == 1
+                    colorBlendMode: _isBadgeActive[index] == '1'
                         ? null
                         : BlendMode.saturation,
                   ),
