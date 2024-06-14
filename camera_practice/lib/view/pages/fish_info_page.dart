@@ -88,13 +88,17 @@ class FishInfoPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Color(0xFF98BAD5),
           title: Text(
-            fishInfoMap[fishName]!['kr_name'] ?? '',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+            fishInfoMap[fishName]!['kr_name'] ?? '', // 텍스트 내용
+            style: TextStyle(
+              fontSize: 30, // 폰트 크기 설정
+              fontFamily: 'Roboto', // 사용할 폰트 설정
+              fontWeight: FontWeight.bold, // 폰트 굵기 설정
+              fontStyle: FontStyle.italic, // 폰트 스타일 설정
+              color: Colors.white, // 텍스트 색상 설정
             ),
           ),
+          automaticallyImplyLeading: false,
+          centerTitle: true,
           bottom: const TabBar(
             tabs: [
               Tab(text: 'About'),
