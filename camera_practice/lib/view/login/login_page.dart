@@ -168,6 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                       onTap: () async {
                         // await viewModel.login();
                         // setState(() {});
+                        print(await KakaoSdk.origin);
                         signInWithKakao();
 
                       },
