@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:aws_s3_upload/aws_s3_upload.dart';
@@ -11,6 +14,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:path/path.dart' as p;
 import 'package:fishdex/view/login/login_page.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Gallery extends StatefulWidget {
   const Gallery({super.key});
@@ -24,8 +28,14 @@ class Gallery extends StatefulWidget {
 class _GalleryState extends State<Gallery> {
   XFile? _image;
   final ImagePicker picker = ImagePicker();
+  String _category = '';
+  final TextEditingController _weightcontroller = TextEditingController();
+  final TextEditingController _lengthcontroller = TextEditingController();
+  final TextEditingController _locationcontroller = TextEditingController();
 
   _uploadToS3() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     if (_image != null) {
       try {
         String filename = p.basename(_image!.path);
@@ -41,7 +51,10 @@ class _GalleryState extends State<Gallery> {
           print("S3에 업로드 성공!");
           print(dotenv.get('S3_URL') + '/${filename}');
           String s3_uri = dotenv.get('S3_URL') + '/${filename}';
-          return s3_uri;
+          String _usercode = prefs.getString('usercode') ?? '';
+          print(_usercode + '' + s3_uri+ '' + _category+ '' + _weightcontroller.text+ '' + _lengthcontroller.text+ '' + _locationcontroller.text);
+          _uploadtoApiServer(_usercode, s3_uri, _category, _weightcontroller.text, _lengthcontroller.text, _locationcontroller.text);
+          return '성공';
         }
         else {
           print("S3에 업로드 실패! : ${response.statusCode}");
@@ -69,7 +82,10 @@ class _GalleryState extends State<Gallery> {
         Map<String, dynamic> jsonData = jsonDecode(species);
         String category = jsonData['species'];
         print('species: $category');
-        return category;
+        setState(() {
+          _category = category;
+        });
+        // return category;
       }
       else {
         print('UPLOAD FAILED');
@@ -82,7 +98,6 @@ class _GalleryState extends State<Gallery> {
     }
   }
 
-
   Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
     if (pickedFile != null) {
@@ -92,24 +107,17 @@ class _GalleryState extends State<Gallery> {
     }
   }
 
-  getUsercode() async {
-    try {
-      User user = await UserApi.instance.me();
-      return user.id.toString();
-    }
-    catch (e) {
-      print("GETUSERCODE ERROR: $e");
-    }
-  }
-
-  _uploadtoApiServer(String usercode, String s3_url, String category) async {
+  _uploadtoApiServer(String usercode, String s3_url, String category, String weight, String length, String location) async {
     try {
       var uri = Uri.parse(dotenv.get('BASE_URL') + '/image/upload');
 
       Map data = {
         'usercode': usercode,
         'url': s3_url,
-        'category': category
+        'category': category,
+        'weight': weight,
+        'length': length,
+        'location': location
       };
 
       var body = json.encode(data);
@@ -122,10 +130,10 @@ class _GalleryState extends State<Gallery> {
 
       print(response.statusCode);
       if (response.statusCode == 200) {
-        print("Usercode, Url, Category 업로드 성공");
+        print("Usercode, Url, Category, 무게, 길이, 위치 업로드 성공");
       }
       else {
-        print("Usercode, Url, Category 업로드 실패");
+        print("Usercode, Url, Category, 무게, 길이, 위치 업로드 실패");
       }
     }
     catch (e) {
@@ -135,82 +143,187 @@ class _GalleryState extends State<Gallery> {
 
   @override
   Widget build(BuildContext context) {
-    var _text = '';
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFF98BAD5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
+        title: const Text(
+          '앨범에서 등록하기', // 텍스트 내용
+          style: TextStyle(
+            fontSize: 30, // 폰트 크기 설정
+            fontFamily: 'Roboto', // 사용할 폰트 설정
+            fontWeight: FontWeight.bold, // 폰트 굵기 설정
+            fontStyle: FontStyle.italic, // 폰트 스타일 설정
+            color: Colors.white, // 텍스트 색상 설정
+          ),
+        ),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+      ),
+      backgroundColor: Color(0xFFC6D3E3),
+
+
       body: Center(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          // mainAxisSize: MainAxisSize.min,
 
           children: [
-            if(_image != null)
-              Container(
+            Container(
+                padding: EdgeInsets.all(5),
+                width: 250.0,
+                height: 250.0,
                 decoration: BoxDecoration(
-                  border: Border.all(),
+                  color: Color(0xff98bad5),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.7),
+                        blurRadius: 5.0,
+                        spreadRadius: 0.0,
+                        offset: Offset(0, 5))
+                  ],
                 ),
-                // padding: const EdgeInsets.all(8.0),
-                child: Image.file(
-                  File(_image!.path),
-                  width: 200,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
-              ),
-
-            Text(
-              _text,
-            ),
-            //이거 빼기
-            ElevatedButton(onPressed: () => getImage(ImageSource.gallery),
-                child: Text('Select Image',
-                    style: TextStyle(color: Colors.lightBlueAccent))),
-            if (_image != null)
-              Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() async {
-                        try {
-                          _text = await _uploadImage();
-                          print(_text);
-                        }
-                        catch (e) {
-                          print("ERROR: $e");
-                        }
-                      });
-                    },
-                    child: Text('UPLOAD',
-                        style: TextStyle(color: Colors.lightBlueAccent)),
-                  ),
-                  ElevatedButton(onPressed: () {
-                    setState(() async {
-                      if (_image != null) {
-                        try {
-                          print("이미지이미지이밎: ");
-                          String url = await _uploadToS3();
-                          String usercode = await getUsercode();
-                          String category = await _uploadImage();
-                          print("S3 URL S3 URL S3 URL: " + url);
-                          print("USERCODE USERCODE USERCODE: " + usercode);
-                          print("CATEGORY CATEGORY CATEGORY: " + category);
-                          _uploadtoApiServer(usercode, url, category);
-                        }
-                        catch (e) {
-                          print("ERROR: $e");
-                        }
-                        // String s3_uri = returnS3Uri() as String;
-                        // print("S3 URL: " + s3_uri);
-                      }
-                    });
+                child: _image == null
+                    ? GestureDetector(
+                  onTap: () {
+                    getImage(ImageSource.gallery);
                   },
-                    child: Text('도감에 저장',
-                        style: TextStyle(color: Colors.lightBlueAccent)),
-                  )
-                ],
-              )
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: Color(0xffD9D9D9),
+                          shape: BoxShape.circle),
+                      child: Icon(
+                        Icons.file_upload_outlined,
+                        size: 100.0,
+                        color: Colors.white,
+                      )),
+                )
+                    :
+
+                CircleAvatar(
+                  backgroundImage: FileImage(File(_image!.path)),
+                )
+          // Container(
+          //         decoration: BoxDecoration(
+          //           border: Border.all(),
+          //         ),
+          //         // padding: const EdgeInsets.all(8.0),
+          //         child: Image.file(
+          //           File(_image!.path),
+          //           width: 200,
+          //           height: 200,
+          //           fit: BoxFit.cover,
+          //         ),
+          //       )
+            ),
+            SizedBox(
+              height: 30.0,
+            ),
+
+
+            _image == null ?
+                Text(
+                  "물고기 사진을 선택해주세요",
+                  style: TextStyle(fontSize: 20.0),
+                )
+                :
+                _category == '' ?
+
+                    ElevatedButton(
+                      onPressed: () {
+                        _uploadImage();
+                      },
+                      child: Text('어떤 물고기일까요?',
+                          style: TextStyle(color: Colors.lightBlueAccent)),
+                    )
+                    :
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                              _category,
+                          ),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('무게: '),
+                              Container(
+                                width: 200,
+                                child: TextFormField(
+                                  controller: _weightcontroller,
+                                  decoration: InputDecoration(border: OutlineInputBorder()),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('길이: '),
+                              Container(
+                                width: 200,
+                                child: TextFormField(
+                                  controller: _lengthcontroller,
+                                  decoration: InputDecoration(border: OutlineInputBorder()),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('위치: '),
+                              Container(
+                                width: 200,
+                                child: TextFormField(
+                                  controller: _locationcontroller,
+                                  decoration: InputDecoration(border: OutlineInputBorder()),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          ElevatedButton(
+                            onPressed: () {
+                              _uploadToS3();
+                              Navigator.pop(
+                                context
+                              );
+                              showToast();
+                            },
+                            child: Text('도감에 저장',
+                                style: TextStyle(color: Colors.lightBlueAccent)),
+                          )
+                        ],
+                    ),
+
+
+
+
+
+
+            SizedBox(
+              height: 40.0,
+            ),
           ],
         ),
       ),
     );
   }
+}
+
+void showToast() {
+  Fluttertoast.showToast(
+      msg: "도감 등록 완료",
+      gravity: ToastGravity.BOTTOM,
+      fontSize: 20,
+      toastLength: Toast.LENGTH_SHORT);
 }
