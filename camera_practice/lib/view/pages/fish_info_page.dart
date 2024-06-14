@@ -1,13 +1,19 @@
+import 'package:fishdex/view/pages/image_data.dart';
 import 'package:flutter/material.dart';
 import 'package:fishdex/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class FishInfoPage extends StatelessWidget {
+class FishInfoPage extends StatefulWidget {
   final String fishName;
-  // final String imageUrl;
 
   // const FishInfoPage({required this.fishName, required this.imageUrl, Key? key}) : super(key: key);
   FishInfoPage({required this.fishName, Key? key}) : super(key: key);
 
+  @override
+  State<FishInfoPage> createState() => _FishInfoPageState();
+}
+
+class _FishInfoPageState extends State<FishInfoPage> {
   final Map<String, String> fishImageMap = {
     'Black Sea Sprat': 'fish-1',
     'Trout': 'fish-2',
@@ -19,7 +25,6 @@ class FishInfoPage extends StatelessWidget {
     'Horse Mackerel': 'fish-8',
     'Gilt-Head Bream': 'fish-9',
   };
-
 
   final Map<String, Map<String, String>> fishInfoMap = {
     'Black Sea Sprat': {
@@ -78,17 +83,24 @@ class FishInfoPage extends StatelessWidget {
     },
   };
 
+  late Future<List<ImageData>> _imageDataList;
 
+  @override
+  void initState() {
+    super.initState();
+    _imageDataList = getUrlImages(widget.fishName);
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xFF98BAD5),
           title: Text(
-            fishInfoMap[fishName]!['kr_name'] ?? '', // 텍스트 내용
+            fishInfoMap[widget.fishName]!['kr_name'] ?? '', // 텍스트 내용
             style: TextStyle(
               fontSize: 30, // 폰트 크기 설정
               fontFamily: 'Roboto', // 사용할 폰트 설정
@@ -114,7 +126,7 @@ class FishInfoPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: Image.asset('lib/fish/${fishImageMap[fishName]}.png'),
+                    child: Image.asset('lib/fish/${fishImageMap[widget.fishName]}.png'),
                   ),
                   const SizedBox(height: 20),
                   const Center(
@@ -129,7 +141,7 @@ class FishInfoPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    fishInfoMap[fishName]!['description'] ?? '',
+                    fishInfoMap[widget.fishName]!['description'] ?? '',
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(height: 20),
@@ -143,7 +155,7 @@ class FishInfoPage extends StatelessWidget {
                             'Average Length',
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
-                          Text(fishInfoMap[fishName]!['length'] ?? '', style: TextStyle(fontSize: 16)),
+                          Text(fishInfoMap[widget.fishName]!['length'] ?? '', style: TextStyle(fontSize: 16)),
                         ],
                       ),
                       Column(
@@ -153,7 +165,7 @@ class FishInfoPage extends StatelessWidget {
                             'Average Weight',
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
-                          Text(fishInfoMap[fishName]!['weight'] ?? '', style: TextStyle(fontSize: 16)),
+                          Text(fishInfoMap[widget.fishName]!['weight'] ?? '', style: TextStyle(fontSize: 16)),
                         ],
                       ),
                     ],
@@ -163,75 +175,92 @@ class FishInfoPage extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.all(5.0),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 1.4,
-                    crossAxisSpacing: 2,
-                    mainAxisSpacing: 10,
-                ),
-                itemCount: fishImageMap.length,
-                // itemCount: 50,
-                itemBuilder: (BuildContext context, int index) {
-                  String key = fishImageMap.keys.elementAt(index);
-                  String value = fishImageMap[key]!;
-                  return GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context){
-                            return Dialog(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(
-                                    width: 150,
-                                    height: 150,
-                                    // child: Image.asset('lib/fish/$value.png'),
-                                    child: Image.network('https://final-fishdex.s3.ap-northeast-2.amazonaws.com/00023.png'),
+              child: FutureBuilder<List<ImageData>>(
+                future: _imageDataList,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No data available'));
+                  } else {
+                    return GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 1.4,
+                        crossAxisSpacing: 2,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: snapshot.data!.length,
+                      // itemCount: 50,
+                      itemBuilder: (BuildContext context, int index) {
+                        // String key = fishImageMap.keys.elementAt(index);
+                        // String value = fishImageMap[key]!;
+
+                        final imageData = snapshot.data![index];
+                        return GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SizedBox(
+                                        width: 150,
+                                        height: 150,
+                                        // child: Image.asset('lib/fish/$value.png'),
+                                        child: Image.network(
+                                            imageData.url),
+                                      ),
+                                      Text(
+                                        "날짜: ${imageData.createtime}",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "길이: ${imageData.length}",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "무게: ${imageData.weight}",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "위치: ${imageData.location}",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 30),
+                                    ],
                                   ),
-                                  Text(
-                                    "날짜: ",
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    "길이: ",
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    "무게: ",
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    "위치: ",
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 30),
-                                ],
-                              ),
+                                );
+                              },
                             );
                           },
-                      );
-                    },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        // child: Image.asset('lib/fish/$value.png'),
-                        child: Image.network('https://final-fishdex.s3.ap-northeast-2.amazonaws.com/00023.png'),
-                      ),
-                  );
-                },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            // child: Image.asset('lib/fish/$value.png'),
+                            child: Image.network(
+                                imageData.url),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                }
               ),
             ),
           ],

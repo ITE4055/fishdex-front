@@ -66,6 +66,28 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFF98BAD5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
+            ),
+          ),
+          title: const Text(
+            '카메라로 등록하기', // 텍스트 내용
+            style: TextStyle(
+              fontSize: 30, // 폰트 크기 설정
+              fontFamily: 'Roboto', // 사용할 폰트 설정
+              fontWeight: FontWeight.bold, // 폰트 굵기 설정
+              fontStyle: FontStyle.italic, // 폰트 스타일 설정
+              color: Colors.white, // 텍스트 색상 설정
+            ),
+          ),
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+        ),
+        backgroundColor: Color(0xFFC6D3E3),
+        
         body: SafeArea(
           child: Stack(children: [
             (_cameraController.value.isInitialized)
@@ -79,7 +101,7 @@ class _CameraPageState extends State<CameraPage> {
                   height: MediaQuery.of(context).size.height * 0.15,
                   decoration: const BoxDecoration(
                       // borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                      color: Colors.lightBlue),
+                      color: Color(0xff98bad5)),
                   child:
                   Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                     Expanded(
