@@ -24,10 +24,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // final viewModel = MainViewModel(KakaoTalkLogin());
-  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String _username = '';
-  String _mainTitle = '';
+  String _mainTitle = '칭호를 등록해주세요';
   String _mainBadgeImagePath = 'lib/icons/fishing.png';
 
   @override
@@ -39,19 +37,14 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? username = prefs.getString('username');
-    String? mainTitle = prefs.getString('mainTitle');
-    String? mainBadge = prefs.getString('mainBadge');
-    if (username != null) {
-      setState(() {
-        _username = username;
-        _mainTitle = mainTitle!;
-        _mainBadgeImagePath = mainBadge!;
-      });
-    }
-    print(username);
-    print(mainTitle);
-    print(mainBadge);
+    setState(() {
+      _username = prefs.getString('username') ?? '';
+      _mainTitle = prefs.getString('mainTitle') ?? '';
+      _mainBadgeImagePath = prefs.getString('mainBadge') ?? '';
+    });
+    print(_username);
+    print(_mainTitle);
+    print(_mainBadgeImagePath);
   }
 
 
@@ -97,19 +90,18 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       CircleAvatar(
-                        radius: 80,
+                        radius: 100,
                         backgroundImage: AssetImage('$_mainBadgeImagePath'), // 뱃지 이미지
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        '타이틀$_mainTitle',
-                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.yellow),
                       ),
                       SizedBox(height: 10),
                       Text(
-                        '이름$_username',
+                        '$_mainTitle',
+                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.yellow),
+                      ),
+                      Text(
+                        '$_username',
                         style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
                       SizedBox(height: 10),

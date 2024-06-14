@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:fishdex/view/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class BadgePage extends StatefulWidget {
   const BadgePage({super.key});
@@ -10,17 +14,66 @@ class BadgePage extends StatefulWidget {
 }
 
 class _BadgePageState extends State<BadgePage> {
-  List<bool> _isBadgeActive = [
-    true,
-    true,
-    false,
-    false,
-    false,
-    true,
-    true,
-    false,
-    false
+  List<String> _isBadgeActive = [
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBadgeList();
+  }
+
+
+
+  Future<void> _loadBadgeList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var uri = Uri.parse(dotenv.get('BASE_URL') + '/user/code');
+
+    // Create the body of the request
+    var body = json.encode({'usercode': prefs.getString('usercode')});
+
+    var request = http.Request('GET', uri)
+      ..headers['Content-Type'] = 'application/json'
+      ..body = body;
+
+    var response = await request.send();
+
+    var responseBody = await response.stream.bytesToString();
+
+    // print("USERCODE: $usercode");
+    print("STATUS CODE: ${response.statusCode}");
+    print("RESPONSE BODY: ${responseBody}");
+
+    if(response.statusCode == 200){
+      var jsonData = json.decode(responseBody);
+      // print(jsonData["badges"].split(','));
+
+      setState(() {
+        _isBadgeActive = jsonData["badges"].split(',');
+      });
+
+      print(_isBadgeActive);
+      // return [jsonData];
+    }
+    // if(response.statusCode == 401){
+    //   var jsonData = json.decode(responseBody);
+    //   print("$jsonData");
+    //   return [jsonData];
+    // }
+    // else{
+    //   print("Failed to Load User");
+    //   return [];
+    // }
+  }
 
   _setMainBadgeTitle(String badgeImage, String title) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -108,17 +161,18 @@ class _BadgePageState extends State<BadgePage> {
                     title: Text(titleList[index]),
                     content: Text(descriptionList[index]),
                     actions: <Widget>[
-                      TextButton(
-                        child: Text('대표 뱃지로 등록'),
-                        onPressed: () {
-                          _setMainBadgeTitle(imageList[index], titleList[index]);
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                                (route) => false,
-                          );
-                        },
-                      ),
+                      if (_isBadgeActive[index] == '1')
+                        TextButton(
+                          child: Text('대표 뱃지로 등록'),
+                          onPressed: () {
+                            _setMainBadgeTitle(imageList[index], titleList[index]);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => HomePage()),
+                                  (route) => false,
+                            );
+                          },
+                        ),
                       TextButton(
                         child: Text('취소'),
                         onPressed: () {
@@ -134,17 +188,17 @@ class _BadgePageState extends State<BadgePage> {
             child: GridTile(
               child: Container(
                 padding: EdgeInsets.all(8.0), // 위아래 공간을 만들기 위해 패딩을 추가합니다.
-                color: _isBadgeActive[index]
+                color: _isBadgeActive[index] == '1'
                     ? Colors.transparent
                     : Colors.grey.withOpacity(0.5),
                 child: Center(
                   child: Image.asset(
                     imageList[index],
                     fit: BoxFit.cover,
-                    color: _isBadgeActive[index]
+                    color: _isBadgeActive[index] == '1'
                         ? null
                         : Colors.grey.withOpacity(0.5),
-                    colorBlendMode: _isBadgeActive[index]
+                    colorBlendMode: _isBadgeActive[index] == '1'
                         ? null
                         : BlendMode.saturation,
                   ),
