@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       SizedBox(height: 10),
                       CircleAvatar(
-                        radius: 100,
+                        radius: 80,
                         backgroundImage: AssetImage('$_mainBadgeImagePath'), // 뱃지 이미지
                       ),
                       SizedBox(height: 10),
