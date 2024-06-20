@@ -254,12 +254,19 @@ class _GalleryState extends State<Gallery> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('무게: '),
                               Container(
-                                width: 200,
+                                width: 100,
                                 child: TextFormField(
                                   controller: _weightcontroller,
-                                  decoration: InputDecoration(border: OutlineInputBorder()),
+                                  decoration: InputDecoration(
+                                      hintText: '무게 Weight',
+                                      hintStyle: TextStyle(fontStyle: FontStyle.italic),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          borderSide: BorderSide.none
+                                      )),
                                 ),
                               ),
                             ],
@@ -267,12 +274,19 @@ class _GalleryState extends State<Gallery> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('길이: '),
                               Container(
-                                width: 200,
+                                width: 100,
                                 child: TextFormField(
                                   controller: _lengthcontroller,
-                                  decoration: InputDecoration(border: OutlineInputBorder()),
+                                  decoration: InputDecoration(
+                                      hintText: '길이 Length',
+                                      hintStyle: TextStyle(fontStyle: FontStyle.italic),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          borderSide: BorderSide.none
+                                      )),
                                 ),
                               ),
                             ],
@@ -280,12 +294,19 @@ class _GalleryState extends State<Gallery> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('위치: '),
                               Container(
-                                width: 200,
+                                width: 100,
                                 child: TextFormField(
                                   controller: _locationcontroller,
-                                  decoration: InputDecoration(border: OutlineInputBorder()),
+                                  decoration: InputDecoration(
+                                      hintText: '위치 Location',
+                                      hintStyle: TextStyle(fontStyle: FontStyle.italic),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          borderSide: BorderSide.none
+                                      )),
                                 ),
                               ),
                             ],
