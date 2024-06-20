@@ -69,9 +69,9 @@ class _CameraPageState extends State<CameraPage> {
         appBar: AppBar(
           backgroundColor: Color(0xFF98BAD5),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(20),
-            ),
+            // borderRadius: BorderRadius.vertical(
+            //   bottom: Radius.circular(20),
+            // ),
           ),
           title: const Text(
             '카메라로 등록하기', // 텍스트 내용
@@ -87,40 +87,56 @@ class _CameraPageState extends State<CameraPage> {
           automaticallyImplyLeading: false,
         ),
         backgroundColor: Color(0xFFC6D3E3),
-        
+
         body: SafeArea(
-          child: Stack(children: [
-            (_cameraController.value.isInitialized)
-                ? CameraPreview(_cameraController)
-                : Container(
-                color: Colors.black,
-                child: const Center(child: CircularProgressIndicator())),
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.15,
-                  decoration: const BoxDecoration(
-                      // borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                      color: Color(0xff98bad5)),
-                  child:
-                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                    Expanded(
-                        child: IconButton(
-                          onPressed: takePicture,
-                          iconSize: 50,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          // icon: const Icon(Icons.circle, color: Colors.white),
-                          icon: Transform.scale(
-                            scale: 0.5,
-                            child: Image.asset(
-                              'lib/icons/fish.png',
-                              color: Colors.white,
-                            ))
-                        )),
-                  ]),
-                )),
-          ]),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(
+                  color: Color(0xFF98BAD5), // border color same as background
+                  width: 10.0, // border width
+                ),
+                right: BorderSide(
+                  color: Color(0xFF98BAD5), // border color same as background
+                  width: 10.0, // border width
+                ),
+              ),
+            ),
+            child: Stack(
+                children: [
+              (_cameraController.value.isInitialized)
+                  ? CameraPreview(_cameraController)
+                  : Container(
+                  color: Colors.black,
+                  child: const Center(child: CircularProgressIndicator())),
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.15,
+                    decoration: const BoxDecoration(
+                        // borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                        color: Color(0xff98bad5),
+                    ),
+                    child:
+                    Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                      Expanded(
+                          child: IconButton(
+                            onPressed: takePicture,
+                            iconSize: 50,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            // icon: const Icon(Icons.circle, color: Colors.white),
+                            icon: Transform.scale(
+                              scale: 0.5,
+                              child: Image.asset(
+                                'lib/icons/fish.png',
+                                color: Colors.white,
+                              ))
+                          )),
+                    ]),
+                  )),
+            ]),
+          ),
         ));
   }
 }
