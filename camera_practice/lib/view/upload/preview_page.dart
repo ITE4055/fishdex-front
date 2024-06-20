@@ -51,100 +51,149 @@ class _PreviewPageState extends State<PreviewPage> {
         automaticallyImplyLeading: false,
       ),
       backgroundColor: Color(0xFFC6D3E3),
-      body: Center(
-        child: Column(mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.file(File(widget.picture.path), fit: BoxFit.cover, width: 250, height: 200,),
-              const SizedBox(height: 24),
-              // Text(picture.path),
-              //촬영 후 바로 업로드
-              // ElevatedButton(onPressed: (){
-              //   _uploadImage(picture.path);
-              // },
-              //     child: Text('Upload', style: TextStyle(color: Colors.lightBlueAccent))),
-              widget.picture == null ?
-              Text(
-                "물고기 사진을 선택해주세요",
-                style: TextStyle(fontSize: 20.0),
-              )
-                  :
-              _category == '' ?
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 30),
+                Image.file(File(widget.picture.path), fit: BoxFit.cover, width: 250, height: 200,),
+                const SizedBox(height: 24),
+                // Text(picture.path),
+                //촬영 후 바로 업로드
+                // ElevatedButton(onPressed: (){
+                //   _uploadImage(picture.path);
+                // },
+                //     child: Text('Upload', style: TextStyle(color: Colors.lightBlueAccent))),
+                widget.picture == null ?
+                Text(
+                  "물고기 사진을 선택해주세요",
+                  style: TextStyle(fontSize: 20.0),
+                )
+                    :
+                _category == '' ?
 
-              ElevatedButton(
-                onPressed: () {
-                  _uploadImage();
-                },
-                child: Text('어떤 물고기일까요?',
-                    style: TextStyle(color: Colors.lightBlueAccent)),
-              )
-                  :
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    _category,
-                  ),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('무게: '),
-                      Container(
-                        width: 200,
-                        child: TextFormField(
-                          controller: _weightcontroller,
-                          decoration: InputDecoration(border: OutlineInputBorder()),
+                ElevatedButton(
+                  onPressed: () {
+                    _uploadImage();
+                  },
+                  child: Text('어떤 물고기일까요?',
+                      style: TextStyle(color: Colors.lightBlueAccent)),
+                )
+                    :
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: Color(0xff98bad5),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        _category,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('길이: '),
-                      Container(
-                        width: 200,
-                        child: TextFormField(
-                          controller: _lengthcontroller,
-                          decoration: InputDecoration(border: OutlineInputBorder()),
+                    ),
+                    SizedBox(height:20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 200,
+                          height: 50,
+                          child: TextFormField(
+                            controller: _weightcontroller,
+                            decoration: InputDecoration(
+                                hintText: '무게 Weight',
+                                hintStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontStyle: FontStyle.italic),
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    borderSide: BorderSide.none
+                                )),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('위치: '),
-                      Container(
-                        width: 200,
-                        child: TextFormField(
-                          controller: _locationcontroller,
-                          decoration: InputDecoration(border: OutlineInputBorder()),
+                      ],
+                    ),
+                    SizedBox(height:10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 200,
+                          height: 50,
+                          child: TextFormField(
+                            controller: _lengthcontroller,
+                            decoration: InputDecoration(
+                                hintText: '길이 Length',
+                                hintStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontStyle: FontStyle.italic),
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    borderSide: BorderSide.none
+                                )),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                    SizedBox(height:10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 200,
+                          height: 50,
+                          child: TextFormField(
+                            controller: _locationcontroller,
+                            decoration: InputDecoration(
+                                hintText: '위치 Location',
+                                hintStyle: TextStyle(
+                                  fontSize: 15,
+                                  fontStyle: FontStyle.italic,),
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    borderSide: BorderSide.none
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height:10),
 
-                  ElevatedButton(
-                    onPressed: () {
-                      _uploadToS3();
-                      Navigator.pop(
-                          context
-                      );
-                      Navigator.pop(
-                          context
-                      );
-                      showToast();
-                    },
-                    child: Text('도감에 저장',
-                        style: TextStyle(color: Colors.lightBlueAccent)),
-                  )
-                ],
-              ),
+                    ElevatedButton(
+                      onPressed: () {
+                        _uploadToS3();
+                        Navigator.pop(
+                            context
+                        );
+                        Navigator.pop(
+                            context
+                        );
+                        showToast();
+                      },
+                      child: Text('도감에 저장',
+                          style: TextStyle(color: Colors.lightBlueAccent)),
+                    )
+                  ],
+                ),
 
 
-            ]
+              ]
+          ),
         ),
       ),
     );
