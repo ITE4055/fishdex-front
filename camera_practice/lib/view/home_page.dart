@@ -25,7 +25,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String _username = '';
-  String _mainTitle = '칭호를 등록해주세요';
+  String _mainTitle = '환영합니다';
   String _mainBadgeImagePath = 'lib/icons/fishing.png';
 
   @override
@@ -39,8 +39,8 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _username = prefs.getString('username') ?? '';
-      _mainTitle = prefs.getString('mainTitle') ?? '';
-      _mainBadgeImagePath = prefs.getString('mainBadge') ?? '';
+      _mainTitle = prefs.getString('mainTitle') ?? '환영합니다';
+      _mainBadgeImagePath = prefs.getString('mainBadge') ?? 'lib/icons/fishing.png';
     });
     print(_username);
     print(_mainTitle);
@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(height: 10),
                       Text(
                         '$_mainTitle',
-                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.yellow),
+                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black45),
                       ),
                       Text(
                         '$_username',

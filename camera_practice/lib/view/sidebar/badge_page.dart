@@ -54,10 +54,142 @@ class _BadgePageState extends State<BadgePage> {
   }
 
 
+  _activeBadge(var jsonData) {
+    // print(jsonData);
+    int blackseasprat = 0;
+    int trout = 0;
+    int stripedredmullet = 0;
+    int shrimp = 0;
+    int seabass = 0;
+    int redseabream = 0;
+    int redmullet = 0;
+    int horsemackerel = 0;
+    int glitheadbream = 0;
+
+    for (int i = 0; i < jsonData.length; i++) {
+      switch (jsonData[i]["category"]) {
+        case "Black Sea Sprat":
+          blackseasprat = jsonData[i]['count'];
+          break;
+        case "Trout":
+          trout = jsonData[i]['count'];
+          break;
+        case "Striped Red Mullet":
+          stripedredmullet = jsonData[i]['count'];
+          break;
+        case "Shrimp":
+          shrimp = jsonData[i]['count'];
+          break;
+        case "Sea Bass":
+          seabass = jsonData[i]['count'];
+          break;
+        case "Red Sea Bream":
+          redseabream = jsonData[i]['count'];
+          break;
+        case "Red Mullet":
+          redmullet = jsonData[i]['count'];
+          break;
+        case "Horse Mackerel":
+          horsemackerel = jsonData[i]['count'];
+          break;
+        case "Glit-Head Bream":
+          glitheadbream = jsonData[i]['count'];
+          break;
+
+      }
+    }
+
+    int sum = blackseasprat + trout + stripedredmullet + shrimp + redmullet + seabass + redseabream + horsemackerel + glitheadbream;
+    setState(() {
+      if (10 <= sum) {
+        _isBadgeActive[2] = '1';
+      } if (5<= sum) {
+        _isBadgeActive[1] = '1';
+      } if(1<= sum) {
+        _isBadgeActive[0] = '1';
+      }
+
+      if (5 <= blackseasprat) {
+        _isBadgeActive[5] = '1';
+      }  if(3<= blackseasprat) {
+        _isBadgeActive[4] = '1';
+      }  if(1<= blackseasprat) {
+        _isBadgeActive[3] = '1';
+      }
+
+      if (5 <= trout) {
+        _isBadgeActive[8] = '1';
+      }  if(3<= trout) {
+        _isBadgeActive[7] = '1';
+      }  if(1<= trout) {
+        _isBadgeActive[6] = '1';
+      }
+
+      if (5 <= stripedredmullet) {
+        _isBadgeActive[11] = '1';
+      }  if(3<= stripedredmullet) {
+        _isBadgeActive[10] = '1';
+      }  if(1<= stripedredmullet) {
+        _isBadgeActive[9] = '1';
+      }
+
+      if (5 <= shrimp) {
+        _isBadgeActive[14] = '1';
+      }  if(3<= shrimp) {
+        _isBadgeActive[13] = '1';
+      }  if(1<= shrimp) {
+        _isBadgeActive[12] = '1';
+      }
+
+      if (5 <= seabass) {
+        _isBadgeActive[17] = '1';
+      }  if(3<= seabass ) {
+        _isBadgeActive[16] = '1';
+      }  if(1<= seabass) {
+        _isBadgeActive[15] = '1';
+      }
+
+      if (5 <= redseabream) {
+        _isBadgeActive[20] = '1';
+      }  if(3<= redseabream) {
+        _isBadgeActive[19] = '1';
+      }  if(1<= redseabream ) {
+        _isBadgeActive[18] = '1';
+      }
+
+      if (5 <= redmullet) {
+        _isBadgeActive[23] = '1';
+      }  if(3<= redmullet) {
+        _isBadgeActive[22] = '1';
+      }  if(1<= redmullet ) {
+        _isBadgeActive[21] = '1';
+      }
+
+      if (5 <= horsemackerel) {
+        _isBadgeActive[26] = '1';
+      }  if(3<= horsemackerel) {
+        _isBadgeActive[25] = '1';
+      }  if(1<= horsemackerel ) {
+        _isBadgeActive[24] = '1';
+      }
+
+      if (5 <= glitheadbream) {
+        _isBadgeActive[29] = '1';
+      }  if(3<= glitheadbream) {
+        _isBadgeActive[28] = '1';
+      }  if(1<= glitheadbream ) {
+        _isBadgeActive[27] = '1';
+      }
+
+
+    });
+
+  }
+
 
   Future<void> _loadBadgeList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var uri = Uri.parse(dotenv.get('BASE_URL') + '/user/code');
+    var uri = Uri.parse(dotenv.get('BASE_URL') + '/image');
 
     // Create the body of the request
     var body = json.encode({'usercode': prefs.getString('usercode')});
@@ -76,24 +208,8 @@ class _BadgePageState extends State<BadgePage> {
 
     if(response.statusCode == 200){
       var jsonData = json.decode(responseBody);
-      // print(jsonData["badges"].split(','));
-
-      setState(() {
-        _isBadgeActive = jsonData["badges"].split(',');
-      });
-
-      print(_isBadgeActive);
-      // return [jsonData];
+      _activeBadge(jsonData);
     }
-    // if(response.statusCode == 401){
-    //   var jsonData = json.decode(responseBody);
-    //   print("$jsonData");
-    //   return [jsonData];
-    // }
-    // else{
-    //   print("Failed to Load User");
-    //   return [];
-    // }
   }
 
   _setMainBadgeTitle(String badgeImage, String title) async {
