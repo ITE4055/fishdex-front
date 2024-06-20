@@ -67,8 +67,8 @@ class _FishInfoPageState extends State<FishInfoPage> {
       'weight': '100-300 g',
     },
     'Sea Bass': {
-      'kr_name': 'Dicentrarchus labrax',
-      'b_name': 'Clupeonella cultriventris',
+      'kr_name': '농어',
+      'b_name': 'Dicentrarchus labrax',
       'description': '유럽 농어는 동부 대서양과 지중해에 널리 분포하며, 상업 어업과 양식업에서 높은 가치를 지닌 종입니다. '
           '농어는 은빛 몸통을 가진 우아한 모습으로, 다양한 요리법에 잘 어울립니다. '
           '이들은 연안 지역과 하구에 서식하며, 종종 기수 환경으로 이동합니다. '
