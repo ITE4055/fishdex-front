@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fishdex/view/bottom_nav.dart';
 import 'package:fishdex/view/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -368,7 +369,7 @@ class _BadgePageState extends State<BadgePage> {
                             _setMainBadgeTitle(imageList[index], titleList[index]);
                             Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(builder: (context) => HomePage()),
+                              MaterialPageRoute(builder: (context) => BottomNav()),
                                   (route) => false,
                             );
                           },
