@@ -175,7 +175,7 @@ class _GalleryState extends State<Gallery> {
             // mainAxisSize: MainAxisSize.min,
 
             children: [
-              SizedBox(height:20),
+              SizedBox(height:150),
               Container(
                   padding: EdgeInsets.all(5),
                   width: 250.0,
@@ -225,7 +225,7 @@ class _GalleryState extends State<Gallery> {
             //       )
               ),
               SizedBox(
-                height: 10.0,
+                height: 20.0,
               ),
 
               _image == null ?
@@ -241,7 +241,7 @@ class _GalleryState extends State<Gallery> {
                           _uploadImage();
                         },
                         child: Text('어떤 물고기일까요?',
-                            style: TextStyle(color: Colors.lightBlueAccent)),
+                            style: TextStyle(color: Color(0xff98bad5))),
                       )
                       :
                       Column(
@@ -348,7 +348,7 @@ class _GalleryState extends State<Gallery> {
                                 showToast();
                               },
                               child: Text('도감에 저장',
-                                  style: TextStyle(color: Colors.lightBlueAccent)),
+                                  style: TextStyle(color: Color(0xff98bad5))),
                             )
                           ],
                       ),
